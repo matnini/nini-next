@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  nini-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nini-production
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Add your environment variables here
+      # - DATABASE_URL=${DATABASE_URL}
+      # - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    restart: unless-stopped
+    # Uncomment if using a database
+    # depends_on:
+    #   - postgres
+
+  # Uncomment if you need a PostgreSQL database
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: nini-postgres
+  #   environment:
+  #     - POSTGRES_USER=${POSTGRES_USER:-nini}
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-nini}
+  #     - POSTGRES_DB=${POSTGRES_DB:-nini}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+
+# volumes:
+#   postgres_data:
