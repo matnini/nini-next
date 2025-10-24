@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import GradientStarsBackground from "@/components/gradient-stars-background"
@@ -46,119 +46,41 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"leaderboard" | "profile">(
     "leaderboard",
   )
+  const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const [leaderboardData] = useState<LeaderboardUser[]>([
-    {
-      rank: 1,
-      username: "viral_queen",
-      avatar: "/nato-desatado.png", // usando avatar personalizado
-      niniScore: 98,
-      videosUploaded: 127,
-      streak: 45,
-      earnings: 12847.5,
-      trend: "up",
-      rankChange: 2,
-    },
-    {
-      rank: 2,
-      username: "meme_king",
-      avatar: "/byron-pixel.png", // usando avatar personalizado
-      niniScore: 96,
-      videosUploaded: 115,
-      streak: 38,
-      earnings: 10234.8,
-      trend: "same",
-      rankChange: 0,
-    },
-    {
-      rank: 3,
-      username: "content_master",
-      avatar: "/byron-mecha.png", // usando avatar personalizado
-      niniScore: 94,
-      videosUploaded: 98,
-      streak: 42,
-      earnings: 9876.3,
-      trend: "up",
-      rankChange: 1,
-    },
-    {
-      rank: 4,
-      username: "tech_guru",
-      avatar: "/nato-desatado.png", // usando avatar personalizado
-      niniScore: 92,
-      videosUploaded: 89,
-      streak: 35,
-      earnings: 8543.2,
-      trend: "down",
-      rankChange: -1,
-    },
-    {
-      rank: 5,
-      username: "lifestyle_pro",
-      avatar: "/byron-pixel.png", // usando avatar personalizado
-      niniScore: 90,
-      videosUploaded: 82,
-      streak: 30,
-      earnings: 7654.9,
-      trend: "up",
-      rankChange: 3,
-    },
-    {
-      rank: 6,
-      username: "fitness_beast",
-      avatar: "/byron-mecha.png", // usando avatar personalizado
-      niniScore: 88,
-      videosUploaded: 76,
-      streak: 28,
-      earnings: 6789.4,
-      trend: "same",
-      rankChange: 0,
-    },
-    {
-      rank: 7,
-      username: "food_lover",
-      avatar: "/nato-desatado.png", // usando avatar personalizado
-      niniScore: 86,
-      videosUploaded: 71,
-      streak: 25,
-      earnings: 5987.6,
-      trend: "up",
-      rankChange: 2,
-    },
-    {
-      rank: 8,
-      username: "travel_addict",
-      avatar: "/byron-pixel.png", // usando avatar personalizado
-      niniScore: 84,
-      videosUploaded: 65,
-      streak: 22,
-      earnings: 5234.8,
-      trend: "down",
-      rankChange: -2,
-    },
-    {
-      rank: 9,
-      username: "gaming_legend",
-      avatar: "/byron-mecha.png", // usando avatar personalizado
-      niniScore: 82,
-      videosUploaded: 59,
-      streak: 20,
-      earnings: 4876.3,
-      trend: "up",
-      rankChange: 1,
-    },
-    {
-      rank: 10,
-      username: "fashion_icon",
-      avatar: "/nato-desatado.png", // usando avatar personalizado
-      niniScore: 80,
-      videosUploaded: 54,
-      streak: 18,
-      earnings: 4321.5,
-      trend: "same",
-      rankChange: 0,
-    },
-  ])
+  useEffect(() => {
+    fetchRanking()
+  }, [])
+
+  const fetchRanking = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/ranking')
+      const result = await response.json()
+
+      if (result.success && result.data) {
+        // Transform API data to match LeaderboardUser format
+        const transformedData: LeaderboardUser[] = result.data.map((user: any) => ({
+          rank: user.rank,
+          username: user.username,
+          avatar: user.avatar,
+          niniScore: user.niniScore,
+          videosUploaded: user.videos,
+          streak: user.streak,
+          earnings: user.earnings,
+          trend: "same" as const,
+          rankChange: 0,
+        }))
+        setLeaderboardData(transformedData)
+      }
+    } catch (error) {
+      console.error('Error fetching ranking:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
 
   const [userProfile] = useState<UserProfile>({
     username: "tu_usuario",

@@ -1,53 +1,168 @@
 # Database Setup Guide
 
-## Prerequisites
+## Local Development Setup
 
-- PostgreSQL database already set up with your schema
-- Database connection credentials
+### Quick Start (Recommended)
 
-## Setup Steps
-
-### 1. Configure Environment Variables
-
-Copy the example environment file and add your database credentials:
+Run the automated setup script:
 
 ```bash
-cp .env.example .env
+./setup-local-db.sh
 ```
 
-Edit `.env` and update the `DATABASE_URL` with your actual PostgreSQL connection string:
+This will:
+1. Start PostgreSQL in Docker
+2. Generate Prisma Client
+3. Push the database schema
+4. Display connection details
 
-```
-DATABASE_URL="postgresql://username:password@host:port/database?schema=public"
-```
+### Manual Setup
 
-### 2. Generate Prisma Client
+If you prefer to run commands manually:
 
-After configuring your DATABASE_URL, generate the Prisma Client:
+#### 1. Start PostgreSQL Database
 
 ```bash
-npx prisma generate
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
-This will create the Prisma Client based on your schema file.
+This starts a PostgreSQL 16 container with:
+- **Host**: localhost
+- **Port**: 5432
+- **Database**: nini_db
+- **User**: nini_user
+- **Password**: nini_password
 
-### 3. (Optional) Introspect Existing Database
-
-If you need to sync your Prisma schema with any changes made directly to the database:
+#### 2. Generate Prisma Client
 
 ```bash
-npx prisma db pull
+npm run db:generate
 ```
 
-### 4. (Optional) Push Schema Changes to Database
-
-If you make changes to `prisma/schema.prisma` and want to update your database:
+#### 3. Push Database Schema
 
 ```bash
-npx prisma db push
+npm run db:push
 ```
 
-**Warning:** This is good for development but for production, use migrations.
+This creates all tables based on your `prisma/schema.prisma` file.
+
+### Verify Database Connection
+
+Open Prisma Studio to view your database:
+
+```bash
+npm run db:studio
+```
+
+This opens a web interface at http://localhost:5555
+
+## Development Workflow
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+Your app will run at http://localhost:3000
+
+### Managing the Database
+
+**View database contents:**
+```bash
+npm run db:studio
+```
+
+**Stop the database:**
+```bash
+docker-compose -f docker-compose.dev.yml down
+```
+
+**Stop and remove data:**
+```bash
+docker-compose -f docker-compose.dev.yml down -v
+```
+
+**View database logs:**
+```bash
+docker logs nini-postgres-dev
+```
+
+**Access PostgreSQL CLI:**
+```bash
+docker exec -it nini-postgres-dev psql -U nini_user -d nini_db
+```
+
+## Database Schema
+
+Your Prisma schema includes:
+
+- **User** - User profiles with XP, levels, streaks
+- **Quest** - Missions/challenges with tracking codes
+- **Submission** - User quest submissions
+- **Reward** - XP and coin rewards
+- **N8nChatHistory** - Chat session history
+
+## Connection String
+
+The connection string in `.env`:
+
+```
+DATABASE_URL="postgresql://nini_user:nini_password@localhost:5432/nini_db?schema=public"
+```
+
+## Production Deployment
+
+For production with Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This starts both the Next.js app and PostgreSQL database together.
+
+## Troubleshooting
+
+### Port 5432 already in use
+
+If you have another PostgreSQL instance running:
+
+```bash
+# Stop other PostgreSQL services
+sudo systemctl stop postgresql
+
+# Or change the port in docker-compose.dev.yml
+ports:
+  - "5433:5432"  # Use port 5433 instead
+```
+
+Then update your `.env`:
+```
+DATABASE_URL="postgresql://nini_user:nini_password@localhost:5433/nini_db?schema=public"
+```
+
+### Database connection refused
+
+Make sure the container is running:
+
+```bash
+docker ps | grep nini-postgres
+```
+
+If not running, start it:
+
+```bash
+docker-compose -f docker-compose.dev.yml up -d
+```
+
+### Reset database completely
+
+```bash
+docker-compose -f docker-compose.dev.yml down -v
+docker-compose -f docker-compose.dev.yml up -d
+npm run db:push
+```
 
 ## Usage in Your Code
 

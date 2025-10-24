@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for local development
+  postgres:
+    image: postgres:16-alpine
+    container_name: nini-postgres-dev
+    environment:
+      POSTGRES_USER: nini_user
+      POSTGRES_PASSWORD: nini_password
+      POSTGRES_DB: nini_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nini_user -d nini_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+    driver: local
