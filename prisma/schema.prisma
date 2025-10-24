@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model N8nChatHistory {
+  id         Int    @id @default(autoincrement())
+  sessionId  String @map("session_id") @db.VarChar(255)
+  message    Json
+
+  @@map("n8n_chat_histories")
+}
+
+model Quest {
+  id               Int           @id @default(autoincrement())
+  trackingCode     String        @unique @map("tracking_code") @db.VarChar(100)
+  title            String        @db.VarChar(255)
+  description      String?       @db.Text
+  xp               Int           @default(0)
+  rewardCoins      Int           @default(0) @map("reward_coins")
+  type             String?       @db.VarChar(50)
+  isActive         Boolean       @default(true) @map("is_active")
+  expiresAt        DateTime?     @map("expires_at") @db.Timestamp()
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamp()
+  poolCoins        Int?          @map("pool_coins")
+  availableScripts Json?         @map("available_scripts")
+
+  submissions      Submission[]
+
+  @@map("quests")
+}
+
+model User {
+  id                    Int           @id @default(autoincrement())
+  displayName           String?       @map("display_name") @db.VarChar(255)
+  phone                 String?       @db.VarChar(50)
+  state                 String?       @db.VarChar(100)
+  level                 Int           @default(1)
+  xpTotal               Int           @default(0) @map("xp_total")
+  niniCoinsBalance      Int           @default(0) @map("nini_coins_balance")
+  streakDays            Int           @default(0) @map("streak_days")
+  lastSubmissionAt      DateTime?     @map("last_submission_at") @db.Timestamp()
+  createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt             DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamp()
+  username              String?       @db.VarChar(255)
+  category              String?       @db.VarChar(100)
+  onboardingCompleted   Boolean       @default(false) @map("onboarding_completed")
+  totalQuestsCompleted  Int           @default(0) @map("total_quests_completed")
+  rank                  Int?
+  chatId                String?       @map("chat_id") @db.Text
+
+  submissions           Submission[]
+  rewards               Reward[]
+
+  @@map("users")
+}
+
+model Submission {
+  id               Int       @id @default(autoincrement())
+  userId           Int       @map("user_id")
+  questId          Int       @map("quest_id")
+  shareUrl         String?   @map("share_url") @db.Text
+  metrics          Json?
+  state            String    @default("pending") @db.VarChar(50)
+  validationNotes  String?   @map("validation_notes") @db.Text
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamp()
+  validatedAt      DateTime? @map("validated_at") @db.Timestamp()
+
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  quest            Quest     @relation(fields: [questId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  rewards          Reward[]
+
+  @@map("submissions")
+}
+
+model Reward {
+  id           Int        @id @default(autoincrement())
+  userId       Int?       @map("user_id")
+  xp           Int        @default(0)
+  coins        Int        @default(0)
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamp()
+  submissionId Int?       @map("submission_id")
+
+  user         User?      @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  submission   Submission? @relation(fields: [submissionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("rewards")
+}
