@@ -11,8 +11,6 @@ import {
   Calendar,
   Eye,
   Instagram,
-  Twitter,
-  Youtube,
   MessageCircle,
   Loader2,
 } from "lucide-react"
@@ -130,7 +128,7 @@ export default function UserProfilePage({ params }: { params: { username: string
           className="w-12 h-12 bg-background/80 backdrop-blur-sm border border-border hover:border-primary hover:bg-primary/10 transition-all"
           asChild
         >
-          <a href="https://instagram.com/nini" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <a href="https://www.instagram.com/ninicreators/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <Instagram className="w-5 h-5" />
           </a>
         </Button>
@@ -140,27 +138,7 @@ export default function UserProfilePage({ params }: { params: { username: string
           className="w-12 h-12 bg-background/80 backdrop-blur-sm border border-border hover:border-primary hover:bg-primary/10 transition-all"
           asChild
         >
-          <a href="https://twitter.com/nini" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <Twitter className="w-5 h-5" />
-          </a>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-12 h-12 bg-background/80 backdrop-blur-sm border border-border hover:border-primary hover:bg-primary/10 transition-all"
-          asChild
-        >
-          <a href="https://youtube.com/@nini" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-            <Youtube className="w-5 h-5" />
-          </a>
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-12 h-12 bg-background/80 backdrop-blur-sm border border-border hover:border-primary hover:bg-primary/10 transition-all"
-          asChild
-        >
-          <a href="https://discord.gg/nini" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+          <a href="https://discord.com/invite/p5e4gnHEPH" target="_blank" rel="noopener noreferrer" aria-label="Discord">
             <MessageCircle className="w-5 h-5" />
           </a>
         </Button>
@@ -350,7 +328,7 @@ export default function UserProfilePage({ params }: { params: { username: string
                 className="bg-primary text-primary-foreground hover:bg-primary/90 text-xl px-12 py-6 font-black"
                 asChild
               >
-                <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/5491157342849?text=Hola!" target="_blank" rel="noopener noreferrer">
                   🚀 EMPEZAR AHORA
                 </a>
               </Button>

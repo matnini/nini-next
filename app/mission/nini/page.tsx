@@ -113,7 +113,7 @@ export default function NiniMissionPage() {
           <Link href="/">
             <Button variant="ghost" className="mb-4">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {t("back") || "Volver"}
+              Volver
             </Button>
           </Link>
 
@@ -168,21 +168,6 @@ export default function NiniMissionPage() {
                 <CardContent>
                   <p className="text-sm text-muted-foreground line-clamp-4">{script.content}</p>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-3">
-                  <div className="w-full flex justify-between text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      ~{script.estimatedViews.toLocaleString()} vistas
-                    </span>
-                    <span className="flex items-center gap-1 text-primary font-bold">
-                      <DollarSign className="w-3 h-3" />
-                      ${script.earnings}
-                    </span>
-                  </div>
-                  <Button className="w-full" size="sm">
-                    Usar este Script
-                  </Button>
-                </CardFooter>
               </Card>
             ))}
           </div>
