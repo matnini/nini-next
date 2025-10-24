@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import GradientStarsBackground from "@/components/gradient-stars-background"
 import MissionPools from "@/components/mission-pools"
+import { TermsModal } from "@/components/terms-modal"
 import { useLanguage } from "@/contexts/language-context"
 import {
   Trophy,
@@ -48,6 +49,7 @@ export default function Home() {
   )
   const [leaderboardData, setLeaderboardData] = useState<LeaderboardUser[]>([])
   const [loading, setLoading] = useState(true)
+  const [termsModalOpen, setTermsModalOpen] = useState(false)
 
   useEffect(() => {
     fetchRanking()
@@ -500,9 +502,12 @@ export default function Home() {
                 <h3 className="text-sm font-black mb-4">{t("footerLegal")}</h3>
                 <ul className="space-y-3">
                   <li>
-                    <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                    <button
+                      onClick={() => setTermsModalOpen(true)}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                    >
                       {t("terms")}
-                    </a>
+                    </button>
                   </li>
                   <li>
                     <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -532,6 +537,8 @@ export default function Home() {
           </div>
         </footer>
       </div>
+
+      <TermsModal open={termsModalOpen} onOpenChange={setTermsModalOpen} />
     </>
   )
 }

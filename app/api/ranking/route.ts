@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import prisma from "@/lib/prisma"
+import { calculateStreak } from "@/lib/streak-calculator"
 
 export async function GET() {
   try {
@@ -9,26 +10,39 @@ export async function GET() {
         onboardingCompleted: true, // Only show users who completed onboarding
       },
       include: {
+        submissions: {
+          select: {
+            createdAt: true,
+          },
+        },
         _count: {
           select: {
             submissions: true, // Count total submissions (videos)
           },
         },
       },
-      orderBy: [
-        { xpTotal: 'desc' }, // Primary sort by XP (NINI Score)
-        { niniCoinsBalance: 'desc' }, // Secondary sort by coins
-        { streakDays: 'desc' }, // Tertiary sort by streak
-      ],
+    })
+
+    // Calculate streaks and transform data
+    const usersWithStreaks = users.map(user => ({
+      ...user,
+      calculatedStreak: calculateStreak(user.submissions),
+    }))
+
+    // Sort by XP, then coins, then streak
+    usersWithStreaks.sort((a, b) => {
+      if (b.xpTotal !== a.xpTotal) return b.xpTotal - a.xpTotal
+      if (b.niniCoinsBalance !== a.niniCoinsBalance) return b.niniCoinsBalance - a.niniCoinsBalance
+      return b.calculatedStreak - a.calculatedStreak
     })
 
     // Transform data to match frontend expectations
-    const rankingData = users.map((user, index) => ({
+    const rankingData = usersWithStreaks.map((user, index) => ({
       rank: index + 1, // Assign rank based on sorted position
       username: user.username || user.displayName || 'Usuario',
       avatar: user.profilePictureUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.id}`,
       videos: user._count.submissions, // Total submissions count
-      streak: user.streakDays,
+      streak: user.calculatedStreak, // Use calculated streak
       earnings: user.niniCoinsBalance, // NINI coins balance as ganancias
       niniScore: user.xpTotal, // XP as NINI Score
       verified: !!user.username, // Consider verified if they have a username
