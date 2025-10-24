@@ -6,13 +6,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import GradientStarsBackground from "@/components/gradient-stars-background"
 import MissionPools from "@/components/mission-pools"
 import { TermsModal } from "@/components/terms-modal"
+import { DiscordIcon } from "@/components/icons/discord-icon"
 import { useLanguage } from "@/contexts/language-context"
 import {
   Trophy,
   Menu,
   X,
   Instagram,
-  MessageCircle,
   Globe,
 } from "lucide-react"
 
@@ -323,7 +323,7 @@ export default function Home() {
           asChild
         >
           <a href="https://discord.com/invite/p5e4gnHEPH" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-            <MessageCircle className="w-5 h-5" />
+            <DiscordIcon className="w-5 h-5" />
           </a>
         </Button>
       </div>
@@ -416,7 +416,7 @@ export default function Home() {
                       asChild
                     >
                       <a href="https://discord.com/invite/p5e4gnHEPH" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-                        <MessageCircle className="w-5 h-5" />
+                        <DiscordIcon className="w-5 h-5" />
                       </a>
                     </Button>
                   </div>
@@ -465,7 +465,7 @@ export default function Home() {
                     asChild
                   >
                     <a href="https://discord.com/invite/p5e4gnHEPH" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-                      <MessageCircle className="w-5 h-5" />
+                      <DiscordIcon className="w-5 h-5" />
                     </a>
                   </Button>
                 </div>

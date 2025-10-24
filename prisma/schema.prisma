@@ -55,7 +55,10 @@ model User {
   totalQuestsCompleted  Int           @default(0) @map("total_quests_completed")
   rank                  Int?
   chatId                String?       @map("chat_id") @db.Text
-  profilePictureUrl     String?       @map("profile_picture_url") @db.Text
+  profilePictureUrl     String?       @map("profile_picture_url") @db.VarChar(2048)
+  autorTotalFollowers   Int?          @map("autor_total_followers")
+  autorTotalLikes       Int?          @map("autor_total_likes")
+  autorTotalVideos      Int?          @map("autor_total_videos")
 
   submissions           Submission[]
   rewards               Reward[]

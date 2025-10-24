@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import GradientStarsBackground from "@/components/gradient-stars-background"
+import { DiscordIcon } from "@/components/icons/discord-icon"
 import {
   Trophy,
   Flame,
@@ -11,8 +12,10 @@ import {
   Calendar,
   Eye,
   Instagram,
-  MessageCircle,
   Loader2,
+  Users,
+  Heart,
+  Video,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -28,6 +31,9 @@ interface UserProfileData {
   category?: string
   joinDate: string
   verified: boolean
+  autorTotalFollowers?: number | null
+  autorTotalLikes?: number | null
+  autorTotalVideos?: number | null
   recentSubmissions: {
     id: number
     questTitle: string
@@ -57,6 +63,7 @@ export default function UserProfilePage({ params }: { params: { username: string
       const result = await response.json()
 
       if (result.success) {
+        console.log('Profile data received:', result.data)
         setUserData(result.data)
         setError(null)
       } else {
@@ -139,7 +146,7 @@ export default function UserProfilePage({ params }: { params: { username: string
           asChild
         >
           <a href="https://discord.com/invite/p5e4gnHEPH" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-            <MessageCircle className="w-5 h-5" />
+            <DiscordIcon className="w-5 h-5" />
           </a>
         </Button>
       </div>
@@ -187,19 +194,19 @@ export default function UserProfilePage({ params }: { params: { username: string
                 <div className="flex-1 text-center lg:text-left">
                   <div className="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
                     <h1 className="text-4xl lg:text-5xl font-black">@{userData.username}</h1>
+                    {userData.category && (
+                      <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-muted text-muted-foreground">
+                        {userData.category}
+                      </div>
+                    )}
                     {userData.verified && (
                       <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-primary/10 text-primary">
                         ✓ Verificado
                       </div>
                     )}
-                    {userData.category && (
-                      <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-accent/10 text-accent">
-                        {userData.category}
-                      </div>
-                    )}
                   </div>
 
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6">
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-4">
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Trophy className="w-4 h-4" />
                       <span className="text-sm">
@@ -219,9 +226,6 @@ export default function UserProfilePage({ params }: { params: { username: string
                       </span>
                     </div>
                   </div>
-
-                  <div className="text-6xl lg:text-7xl font-black text-primary mb-2">{userData.niniScore}</div>
-                  <div className="text-sm text-muted-foreground">NINI Score</div>
                 </div>
               </div>
             </div>
@@ -244,6 +248,49 @@ export default function UserProfilePage({ params }: { params: { username: string
               <div className="bg-card border border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
                 <div className="text-3xl font-black text-primary mb-2">{userData.earnings.toLocaleString()}</div>
                 <div className="text-sm text-muted-foreground">NINI Coins</div>
+              </div>
+            </div>
+
+            {/* TikTok Stats Section */}
+            <div className="bg-card border border-border rounded-2xl p-8 mb-8">
+              <h2 className="text-2xl font-black mb-6 flex items-center gap-2">
+                <Video className="w-6 h-6" />
+                Estadísticas de TikTok
+              </h2>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="bg-background border border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Users className="w-5 h-5 text-primary" />
+                    <div className="text-3xl font-black text-foreground">
+                      {userData.autorTotalFollowers !== null && userData.autorTotalFollowers !== undefined
+                        ? userData.autorTotalFollowers.toLocaleString()
+                        : '—'}
+                    </div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Seguidores</div>
+                </div>
+                <div className="bg-background border border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Heart className="w-5 h-5 text-red-500" />
+                    <div className="text-3xl font-black text-foreground">
+                      {userData.autorTotalLikes !== null && userData.autorTotalLikes !== undefined
+                        ? userData.autorTotalLikes.toLocaleString()
+                        : '—'}
+                    </div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Likes Totales</div>
+                </div>
+                <div className="bg-background border border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Video className="w-5 h-5 text-primary" />
+                    <div className="text-3xl font-black text-foreground">
+                      {userData.autorTotalVideos !== null && userData.autorTotalVideos !== undefined
+                        ? userData.autorTotalVideos.toLocaleString()
+                        : '—'}
+                    </div>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Videos en TikTok</div>
+                </div>
               </div>
             </div>
 
@@ -298,12 +345,12 @@ export default function UserProfilePage({ params }: { params: { username: string
                             )}
                           </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex flex-col gap-1">
                           {totalRewards.xp > 0 && (
                             <div className="text-sm font-bold text-primary">+{totalRewards.xp} XP</div>
                           )}
                           {totalRewards.coins > 0 && (
-                            <div className="text-sm font-bold text-accent">+{totalRewards.coins} coins</div>
+                            <div className="text-sm font-bold text-primary">+{totalRewards.coins} coins</div>
                           )}
                         </div>
                       </div>

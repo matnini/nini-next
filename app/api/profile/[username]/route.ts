@@ -90,6 +90,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ user
       category: user.category,
       joinDate: user.createdAt.toISOString(),
       verified: !!user.username,
+      autorTotalFollowers: user.autorTotalFollowers,
+      autorTotalLikes: user.autorTotalLikes,
+      autorTotalVideos: user.autorTotalVideos,
       recentSubmissions: user.submissions.map(sub => ({
         id: sub.id,
         questTitle: sub.quest.title,
